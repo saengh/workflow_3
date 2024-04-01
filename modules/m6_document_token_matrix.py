@@ -37,7 +37,7 @@ def generate_doc_topic_matrix(df, keyw_col, prob_col, token_type):
 
   return document_token_matrix
 
-df = pd.read_parquet(lda_preprocessed_df_path)
+df = pd.read_pickle(lda_preprocessed_df_path)
 
 # Convert the matrix to a DataFrame for easier viewing and manipulation
 df_unigrams_matrix = pd.DataFrame(generate_doc_topic_matrix(df, 'Keywords', 'Keywords_Prob', token_type_list[0]))
@@ -47,5 +47,5 @@ df_bigrams_matrix = pd.DataFrame(generate_doc_topic_matrix(df, 'Keywords', 'Keyw
 # df_unigrams_matrix.to_excel(workflow_folder + r'\excel\document_topic_matrix_unigrams.xlsx')
 # df_bigrams_matrix.to_excel(workflow_folder + r'\excel\document_topic_matrix_bigrams.xlsx')
 
-df_unigrams_matrix.to_parquet(workflow_folder + r'\parquet\document_topic_matrix_unigrams.parquet')
-df_bigrams_matrix.to_parquet(workflow_folder + r'\parquet\document_topic_matrix_bigrams.parquet')
+df_unigrams_matrix.to_pickle(workflow_folder + r'\pickle\document_topic_matrix_unigrams.pickle')
+df_bigrams_matrix.to_pickle(workflow_folder + r'\pickle\document_topic_matrix_bigrams.pickle')

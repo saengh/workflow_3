@@ -20,7 +20,7 @@ download('stopwords')
 
 # keep alphabets only and convert to lower case 
 def clean_text(text):
-    text = re.sub("[^a-zA-Z]", " ", text)
+    text = re.sub("[^a-zA-Z\s]", "", text)
     text = text.lower()
     return text
 
@@ -92,10 +92,7 @@ def clean_sent_tokens(sent_token_list):
 # -----------------------------------------------------------------------------------
 
 # Load parsed dataset
-df = pd.read_parquet(parsed_xml_cpc_path)
-
-# Load custom stopwords, ignorewords, and synonyms
-custom_preprocessing_path = workflow_folder + r'\resources\custom_preprocessing.xlsx'
+df = pd.read_pickle(parsed_xml_cpc_path)
 
 # Initialize the WordNet Lemmatizer
 lemmatizer = WordNetLemmatizer()
@@ -138,12 +135,15 @@ for field in fields:
 for field in fields:
     all_sent_tokens = []
     for row_text in df[field]:
-        processed_sent_tokens = clean_sent_tokens(sent_tokenizer(row_text))
-        all_sent_tokens.append(processed_sent_tokens)
+        if isinstance(row_text, str):
+            processed_sent_tokens = clean_sent_tokens(sent_tokenizer(row_text))
+            all_sent_tokens.append(processed_sent_tokens)
+        else:
+            all_sent_tokens.append([])
     df[f'{field}_sent_tokens'] = all_sent_tokens
 
 df.to_excel(workflow_folder + r'\excel\preprocessed_df.xlsx', index=False)
-df.to_parquet(workflow_folder + r'\parquet\preprocessed_df.parquet')
+df.to_pickle(workflow_folder + r'\pickle\preprocessed_df.pickle')
 
 # -----------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------
@@ -157,9 +157,9 @@ tfidf_skip_list = list(stop_words)
 df['CTB_word_tokens'] = df['CTB_word_tokens'].apply(lambda row: ' '.join(row))
 df['CTB_CPC_word_tokens'] = df['CTB_CPC_word_tokens'].apply(lambda row: ' '.join(row))
 
-tfidf_save_path = workflow_folder + r'\resources\tfidf_matrix.xlsx'
+tfidf_save_path = tfidf_matrix_path
 
-tfidf_vectorizer = TfidfVectorizer(stop_words=tfidf_skip_list, max_df=0.95, min_df=2, max_features=500)
+tfidf_vectorizer = TfidfVectorizer(stop_words=tfidf_skip_list, ngram_range=(1,2), max_df=0.85, min_df=0.02, max_features=1000)
 
 with pd.ExcelWriter(tfidf_save_path) as writer:
     for col in ['CTB_word_tokens', 'CTB_CPC_word_tokens']:

@@ -21,11 +21,14 @@ def jsd(matrix):
 
   return jsd_df
 
-unigrams_matrix = pd.read_parquet(unigrams_matrix_path)
-bigrams_matrix = pd.read_parquet(bigrams_matrix_path)
+unigrams_matrix = pd.read_pickle(unigrams_matrix_path)
+bigrams_matrix = pd.read_pickle(bigrams_matrix_path)
 
 jsd_unigrams_df = jsd(unigrams_matrix)
 jsd_bigrams_df = jsd(bigrams_matrix)
 
-jsd_unigrams_df.to_parquet(workflow_folder + r'\parquet\jsd_unigrams.parquet')
-jsd_bigrams_df.to_parquet(workflow_folder + r'\parquet\jsd_bigrams.parquet')
+jsd_unigrams_df.to_excel(workflow_folder + r'\excel\jsd_unigrams.xlsx')
+jsd_bigrams_df.to_excel(workflow_folder + r'\excel\jsd_bigrams.xlsx')
+
+jsd_unigrams_df.to_pickle(workflow_folder + r'\pickle\jsd_unigrams.pickle')
+jsd_bigrams_df.to_pickle(workflow_folder + r'\pickle\jsd_bigrams.pickle')

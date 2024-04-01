@@ -74,5 +74,5 @@ new_column_names = ['PNKC', 'TI', 'AB', 'ICLM', 'CLMS', 'CTB', 'CPC']
 df.columns = new_column_names
 
 # Saving dataframe
-df.head(100).to_excel(workflow_folder + r'\excel\parsed_xml.xlsx', index=False)
-df.head(100).to_parquet(workflow_folder + r'\parquet\parsed_xml.parquet')
+df.to_excel(workflow_folder + r'\excel\parsed_xml.xlsx', index=False)
+df.to_pickle(workflow_folder + r'\pickle\parsed_xml.pickle')
